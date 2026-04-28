@@ -1,12 +1,79 @@
-# Monthly-Habit-Tracker
-A clean monthly habit tracker web app that lets you enter habits, generate a 30-day checklist, track daily completion with points, view a progress graph, and get month-end analysis.
+# 📅 Monthly Habit Tracker
 
-# Monthly Habit Tracker is a lightweight browser-based planner for building good habits. Enter your habits, generate a 30-day checklist, check off daily completion, and get instant feedback with a score graph plus end-of-month performance analysis.
+A clean and lightweight **monthly habit tracker web app** that helps you build consistency and track your daily progress effectively.
 
-# Key features
-.Add habits with one input per line
-.Generate a 30-day habit plan
-.Tick off each day’s completion
-.Daily feedback based on completed habits
-.30-day score graph for visual progress
-.Month-end summary with average score and best days
+---
+
+## 🚀 Overview
+
+**Monthly Habit Tracker** is a browser-based planner designed to help you develop good habits.
+
+* Enter your habits
+* Generate a 30-day checklist
+* Track daily completion
+* Get instant feedback with scores
+* Visualize progress with graphs
+* Analyze performance at the end of the month
+
+---
+
+## ✨ Features
+
+* ➕ Add habits (one per line input)
+* 📆 Generate a 30-day habit plan
+* ✅ Mark daily habit completion
+* 📊 Get daily feedback based on performance
+* 📈 View 30-day progress graph
+* 🧾 Month-end summary with:
+
+  * Average score
+  * Best performing days
+
+---
+
+## 🛠️ Tech Stack (Optional)
+
+*(You can edit this based on your project)*
+
+* HTML
+* CSS
+* JavaScript
+
+---
+
+## 📸 Screenshots
+
+*(Add screenshots of your app here)*
+
+---
+
+## 📦 How to Use
+
+1. Enter your habits (one per line)
+2. Click on generate plan
+3. Track habits daily
+4. View your progress graph
+5. Check your month-end analysis
+
+---
+
+## 🎯 Purpose
+
+This project helps users:
+
+* Stay consistent
+* Track productivity
+* Build positive habits
+
+---
+
+## 🤝 Contributing
+
+Feel free to fork this repository and contribute!
+
+---
+
+## 📄 License
+
+This project is open-source and available under the MIT License.
+
