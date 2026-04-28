@@ -9,7 +9,17 @@ const analysisText = document.getElementById('analysis-text');
 const scoreChart = document.getElementById('score-chart');
 
 const STORAGE_KEY = 'monthlyHabitTrackerData';
+const HISTORY_KEY = 'monthlyHabitTrackerHistory';
 const DAYS = 30;
+const MAX_HISTORY = 10;
+
+let historySection = null;
+let historyList = null;
+
+function initHistoryElements() {
+  historySection = document.getElementById('history-section');
+  historyList = document.getElementById('history-list');
+}
 
 function buildTracker(habits, savedData = {}) {
   trackerTable.innerHTML = '';
@@ -101,6 +111,121 @@ function loadSavedTracker() {
   } catch {
     return null;
   }
+}
+
+function loadHistory() {
+  const raw = localStorage.getItem(HISTORY_KEY);
+  if (!raw) return [];
+
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return [];
+  }
+}
+
+function saveToHistory(habits, state) {
+  const history = loadHistory();
+  const snapshot = {
+    id: Date.now(),
+    habits,
+    state,
+    createdAt: new Date().toISOString(),
+    totalScore: Object.values(state).reduce((sum, dayScores) => {
+      return sum + Object.values(dayScores).filter(v => v === true).length;
+    }, 0),
+  };
+
+  history.unshift(snapshot);
+  if (history.length > MAX_HISTORY) {
+    history.pop();
+  }
+
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+  renderHistory();
+}
+
+function renderHistory() {
+  const history = loadHistory();
+  if (!historyList || !historySection) return;
+
+  if (history.length === 0) {
+    historySection.classList.add('hidden');
+    return;
+  }
+
+  historySection.classList.remove('hidden');
+  historyList.innerHTML = '';
+
+  history.forEach(snapshot => {
+    const date = new Date(snapshot.createdAt);
+    const formattedDate = date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+
+    const item = document.createElement('div');
+    item.className = 'history-item';
+
+    const score = snapshot.totalScore;
+    const maxScore = snapshot.habits.length * DAYS;
+    const percentage = maxScore > 0 ? ((score / maxScore) * 100).toFixed(0) : 0;
+
+    const habitsPreview = snapshot.habits.slice(0, 2).join(', ') + (snapshot.habits.length > 2 ? ` +${snapshot.habits.length - 2} more` : '');
+
+    item.innerHTML = `
+      <div class="history-item-date">${formattedDate}</div>
+      <div class="history-item-habits">
+        ${snapshot.habits.length} habit${snapshot.habits.length === 1 ? '' : 's'}
+        <span>${habitsPreview}</span>
+      </div>
+      <div class="history-item-score">Score: ${score} points (${percentage}%)</div>
+      <div class="history-item-actions">
+        <button data-action="view" data-id="${snapshot.id}">View</button>
+        <button data-action="restore" data-id="${snapshot.id}">Restore</button>
+      </div>
+    `;
+
+    historyList.appendChild(item);
+  });
+
+  historyList.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const action = btn.dataset.action;
+      const id = parseInt(btn.dataset.id, 10);
+      const snapshot = history.find(s => s.id === id);
+      if (!snapshot) return;
+
+      if (action === 'restore') {
+        habitsInput.value = snapshot.habits.join('\n');
+        showTracker(snapshot.habits, snapshot.state);
+        persistTracker(snapshot.habits, snapshot.state);
+      } else if (action === 'view') {
+        showHistoryModal(snapshot);
+      }
+    });
+  });
+}
+
+function showHistoryModal(snapshot) {
+  const date = new Date(snapshot.createdAt);
+  const formattedDate = date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+
+  const score = snapshot.totalScore;
+  const maxScore = snapshot.habits.length * DAYS;
+  const percentage = maxScore > 0 ? ((score / maxScore) * 100).toFixed(0) : 0;
+
+  let message = `Plan from ${formattedDate}\n\nHabits:\n${snapshot.habits.map(h => '• ' + h).join('\n')}\n\nTotal Score: ${score}/${maxScore} points (${percentage}%)\n\nClick "Restore" to load this plan.`;
+  window.alert(message);
 }
 
 function showTracker(habits, savedData = {}) {
@@ -268,6 +393,7 @@ generateBtn.addEventListener('click', () => {
   const savedData = saved && arraysEqual(saved.habits, habits) ? saved.state : {};
   showTracker(habits, savedData);
   persistTracker(habits, savedData);
+  saveToHistory(habits, savedData);
 });
 
 clearBtn.addEventListener('click', () => {
@@ -290,6 +416,9 @@ function arraysEqual(a, b) {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
+  initHistoryElements();
+  renderHistory();
+  
   const saved = loadSavedTracker();
   if (!saved) return;
 
