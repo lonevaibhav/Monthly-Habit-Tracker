@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monthly Habit Tracker</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header>
+      <h1>Monthly Habit Tracker</h1>
+      <p>Enter your habits, then generate a 30-day plan with checkboxes for each day.</p>
+    </header>
+
+    <section class="input-panel">
+      <label for="habits-input">Your habits (one per line):</label>
+      <textarea id="habits-input" placeholder="Drink water\nExercise\nRead for 20 minutes"></textarea>
+      <div class="controls">
+        <button id="generate-btn" class="primary">Generate 30-day plan</button>
+        <button id="clear-btn" class="secondary">Clear saved plan</button>
+      </div>
+    </section>
+
+    <section id="tracker-section" class="tracker-section hidden">
+      <div class="tracker-header">
+        <h2>Your 30-day habit plan</h2>
+        <p>Tick off each habit as you complete it each day. Review daily feedback, track your points, and analyze the month at the end.</p>
+      </div>
+
+      <div class="summary-panel">
+        <div class="summary-top">
+          <div class="summary-card">
+            <div class="summary-card-header">
+              <h3>Daily feedback</h3>
+              <label for="day-select">Choose a day:</label>
+            </div>
+            <select id="day-select"></select>
+            <p id="feedback-text"></p>
+          </div>
+
+          <div class="summary-card chart-card">
+            <div class="summary-card-header">
+              <h3>30-day score graph</h3>
+            </div>
+            <canvas id="score-chart" width="960" height="260"></canvas>
+          </div>
+        </div>
+
+        <div class="analysis-card summary-card">
+          <h3>Month-end analysis</h3>
+          <p id="analysis-text"></p>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table id="tracker-table"></table>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
